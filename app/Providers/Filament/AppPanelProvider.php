@@ -22,7 +22,6 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Openplain\FilamentShadcnTheme\Color as ShadcnColor;
 
 class AppPanelProvider extends PanelProvider
 {
@@ -40,7 +39,7 @@ class AppPanelProvider extends PanelProvider
             ->emailChangeVerification()
             ->profile(UserEditProfile::class)
             ->colors([
-                'primary' => ShadcnColor::Blue,
+                'primary' => "#104E64",
             ])
             ->darkMode(false)
             ->viteTheme('resources/css/filament/app/theme.css')
