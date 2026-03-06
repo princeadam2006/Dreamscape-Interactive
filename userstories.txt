@@ -1,0 +1,146 @@
+﻿Filament-Only Project User Stories (Dreamscape Interactive)
+
+Project Constraints (Mandatory)
+- The entire application UI must be implemented with Filament only.
+- Use only Filament resources, pages, widgets, relation managers, table actions, bulk actions, filters, and form schemas.
+- Do not build custom Blade pages, custom Livewire components, or custom front-end routes for application screens.
+- Authentication, registration, password reset, and email verification must use Filament auth pages.
+- Authorization is managed with Filament Shield (Spatie roles/permissions).
+
+Personas
+- Player: a registered user who collects items, trades, and manages profile settings.
+- Admin: a user with elevated permissions to manage users, items, assignments, and reports.
+- Guest: an unauthenticated visitor with limited read-only access where allowed.
+
+1) Registration (Filament auth register + email verification)
+Story:
+As a potential Player, I want to register through Filament so I can create an account and start using inventory and trading features.
+Acceptance criteria:
+- Registration is available through Filament’s register page.
+- Form validates required fields and valid email format.
+- Duplicate email is rejected with a clear validation error.
+- Password follows the configured Laravel/Filament password policy.
+- On success, a verification email is sent automatically.
+- Account access to protected panel functionality is blocked until email verification is completed.
+- User can request/resend verification through Filament’s verification flow.
+- Username is generated server-side if not supplied by the auth form and remains unique.
+
+2) Authentication / Login (Filament auth login)
+Story:
+As a Player, I want to log in via Filament so I can access my account.
+Acceptance criteria:
+- Login uses Filament auth login page.
+- Valid credentials create a secure session.
+- Invalid credentials show generic error feedback.
+- Unverified users are routed through Filament’s email verification prompt flow.
+- Protected panel routes require authentication and proper permission checks.
+
+3) Profile management (Filament profile)
+Story:
+As a Player, I want to view and update my profile in Filament.
+Acceptance criteria:
+- Profile update is available via Filament profile page.
+- User can update allowed fields (e.g., name/email/preferences).
+- Changes persist immediately.
+- Email change triggers verification flow where configured.
+
+4) Item catalog exploration (Filament resource table)
+Story:
+As a Player or Guest (if exposed), I want to browse/search/filter items.
+Acceptance criteria:
+- Item catalog uses Filament table listing.
+- Filters include type, rarity, and required level.
+- Search supports name and description.
+- Sorting supports relevant fields (e.g., rarity, power).
+- Pagination is enabled.
+- Market-scoped visibility follows tradeable and lock rules.
+
+5) Item details (Filament resource view)
+Story:
+As a Player, I want to see complete item details.
+Acceptance criteria:
+- Detail view shows name, description, type, rarity, power, speed, durability, magical properties.
+- Numeric stats are bounded by validation rules (0-100 where applicable).
+- Presentation uses Filament infolists/forms only.
+
+6) Personal inventory (Filament inventory resource)
+Story:
+As a Player, I want to manage my inventory.
+Acceptance criteria:
+- Inventory list is available through Filament.
+- Search, filter, and sorting work on inventory item and related item stats.
+- Allowed actions (e.g., remove/drop when business rules allow) are implemented as Filament actions.
+- Empty state is handled by Filament table empty-state UX.
+
+7) Trade proposal creation (Filament forms/actions)
+Story:
+As a Player, I want to create trade proposals to other players.
+Acceptance criteria:
+- Trade creation uses Filament forms/actions.
+- Server validation enforces ownership and unlocked status.
+- Trade statuses include: open, accepted, rejected, canceled.
+- Only available/unlocked items can be included.
+- Trade acceptance is processed transactionally.
+
+8) Trade response + notifications
+Story:
+As a Player, I want to accept/reject incoming trades and receive notifications.
+Acceptance criteria:
+- Accept/reject actions exist in Filament table or record actions.
+- Status updates are persisted correctly.
+- Notifications are stored and visible via Filament UI (resource/widget/page).
+- Optional email notifications are controlled via profile preferences.
+
+9) Market visibility rules
+Story:
+As a Player, I want market items filtered to valid tradeable entries.
+Acceptance criteria:
+- Market listing shows only items allowed by tradeability rules.
+- Locked items are clearly indicated and excluded from conflicting actions.
+- Filament filters/scopes enforce market state rules.
+
+10) Admin: account creation and role assignment (Shield)
+Story:
+As an Admin, I want to create accounts and assign roles quickly.
+Acceptance criteria:
+- Admin user management is built with Filament resources.
+- Role assignment is managed through Shield roles/permissions.
+- Only authorized roles can access admin resources.
+- Account creation actions are logged in audit logs.
+
+11) Admin: item CRUD with stat constraints
+Story:
+As an Admin, I want full item lifecycle management.
+Acceptance criteria:
+- Item create/update/delete is available in Filament resource.
+- Stats enforce integer 0-100 constraints.
+- Deletion strategy is explicit (soft delete or confirmed hard delete).
+- Changes appear immediately in catalog and detail views.
+
+12) Admin: assign items to players
+Story:
+As an Admin, I want to assign items to specific players.
+Acceptance criteria:
+- Assignment action/form exists in Filament admin UI.
+- Result writes to inventory_items table.
+- Audit log captures admin, target user/item, reason, timestamp.
+- UI returns clear success/failure feedback.
+
+13) Admin: economy insights
+Story:
+As an Admin, I want ownership analytics by item or item type.
+Acceptance criteria:
+- Admin can query counts of unique players owning item(s).
+- Filters support tradeable/locked status and optional time windows.
+- Implemented as Filament widget/page/resource reporting view.
+- Performance target supports interactive use on normal dataset.
+
+Global Definition of Done (Filament-only)
+- No custom Blade application pages for core flows.
+- No custom Livewire components for core flows.
+- No custom non-Filament UI routes for core flows.
+- Role/permission enforcement is implemented via Shield.
+- Validation is server-side and defined in Filament forms/actions or model rules.
+- Relevant tests cover critical happy paths and failures.
+- Migrations and seeders are reproducible.
+- Logging/audit behavior exists for admin-sensitive actions.
